@@ -9,7 +9,10 @@ const TasksProvider = ({ children }) => {
     const [tasksCompleted, setTasksCompleted] = useState(0);
     const [tasksRemaining, setTasksRemaining] = useState(0);
 
-    const initiateTasks = (tasks) => setTasks(tasks);
+    const initiateTasks = (tasks) => {
+        tasks.map((task) => (task.allowedToDelete = taskCanBeDeleted(task)));
+        setTasks(tasks);
+    };
 
     const taskCanBeDeleted = ({ status, estimated_time }) => {
         if (!isTaskCompleted(status)) {
@@ -30,12 +33,7 @@ const TasksProvider = ({ children }) => {
     const getTasks = () => {
         axios
             .get("tasks")
-            .then((res) => {
-                res.data.map((task) => {
-                    task.allowedToDelete = taskCanBeDeleted(task);
-                });
-                initiateTasks(res.data);
-            })
+            .then((res) => initiateTasks(res.data))
             .catch((err) => {
                 console.error(err);
             });
@@ -76,6 +74,7 @@ const TasksProvider = ({ children }) => {
                 tasksRemaining,
                 taskCanBeDeleted,
                 isTaskCompleted,
+                initiateTasks,
             }}
         >
             {children}

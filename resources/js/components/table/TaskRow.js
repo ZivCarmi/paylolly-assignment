@@ -31,7 +31,6 @@ const TaskRow = ({ task }) => {
 
                     newTasks[index] = newTaskData;
                     setTasks(newTasks);
-                    console.log(tasks);
                 });
         } catch (error) {
             alert(`Failed to update task status: ${error}`);
@@ -50,7 +49,6 @@ const TaskRow = ({ task }) => {
 
     return (
         <tr onClick={updateStatus}>
-            <th>{task.id}</th>
             <td>{task.task_name}</td>
             <td>{formattedEstDate}</td>
             <td>{task.status}</td>

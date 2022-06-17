@@ -3,10 +3,12 @@ import { useTasks } from "../../contexts/TasksContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import api from "../../api";
+import Filters from "./Filters";
 
 const Header = () => {
     const [selectedTaskName, setSelectedTaskName] = useState("");
     const [selectedEstDate, setSelectedEstDate] = useState(null);
+
     const {
         tasks,
         setTasks,
@@ -33,8 +35,6 @@ const Header = () => {
             alert(`Failed to add Task: ${error}`);
         }
     };
-
-    const filterTasks = (e) => {};
 
     return (
         <div className="header">
@@ -67,29 +67,7 @@ const Header = () => {
                     Add Task
                 </button>
             </div>
-            <div className="filters">
-                <h2 className="filter-by">Filter by</h2>
-                <div className="filters-form">
-                    <label className="status-filter">
-                        <input
-                            type="radio"
-                            name="filter"
-                            value="status"
-                            onChange={filterTasks}
-                        />
-                        Status
-                    </label>
-                    <label className="date-filter">
-                        <input
-                            type="radio"
-                            name="filter"
-                            value="date"
-                            onChange={filterTasks}
-                        />
-                        Date
-                    </label>
-                </div>
-            </div>
+            <Filters />
         </div>
     );
 };

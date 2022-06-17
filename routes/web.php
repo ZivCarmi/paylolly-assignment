@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FiltersController;
+use App\Http\Controllers\SortsController;
 use App\Http\Controllers\TasksController;
 
 /*
@@ -18,5 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('tasks/filter/{filter}', [TasksController::class, 'filter_by']);
+Route::get('tasks/filter_by/{filter_type}/{filter_value}', [FiltersController::class, 'filter_by']);
+Route::get('tasks/sort_by/{sort_type}/{sort_value}', [FiltersController::class, 'filter_by']);
+Route::get('tasks/filters', [FiltersController::class, 'index']);
 Route::resource('tasks', TasksController::class);

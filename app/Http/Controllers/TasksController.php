@@ -20,11 +20,6 @@ class TasksController extends Controller
         try {
             $tasks = Tasks::orderBy('id', 'DESC')->get();
 
-            foreach ($tasks as &$task) {
-                $task['created_at_formatted'] = Carbon::parse($task->from_date)->format('d/m/Y');
-                // $task['estimated_time'] = Carbon::parse($task['estimated_time'])->format('d/m/Y');
-            }
-
             return response()->json($tasks);
         } catch (Exception $err) {
             Log::error($err);
@@ -73,18 +68,6 @@ class TasksController extends Controller
     public function edit($id)
     {
         //
-    }
-
-    public function update_status(Request $request, $id)
-    {
-        return response()->json('update_status');
-        // print_r();
-        // if ($request->keys('taskStatus')) {
-            
-        //     $validated = $request->validate([
-        //         'taskName' => 'required|in:Remaining,Completed',
-        //     ]);
-        // }
     }
 
     /**
