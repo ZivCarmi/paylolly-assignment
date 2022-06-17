@@ -8,8 +8,9 @@ import api from "../api";
 const Modal = ({ setModalIsOpen, taskId }) => {
     const [selectedTaskName, setSelectedTaskName] = useState("");
     const [selectedEstDate, setSelectedEstDate] = useState(null);
-    const { tasks, setTasks } = useTasks();
+    const { tasks, setTasks, taskCanBeDeleted } = useTasks();
 
+    // Set initial task data to populate into the inputs
     useEffect(() => {
         const newTasks = [...tasks];
         const index = newTasks.findIndex((task) => task.id === taskId);
@@ -35,10 +36,13 @@ const Modal = ({ setModalIsOpen, taskId }) => {
             .then(() => {
                 setModalIsOpen(false);
 
+                // New estimated time assigning below so taskCanBeDeleted function can get the updated value
+                newTasks[index].estimated_time = selectedEstDate;
+
                 const newTaskData = {
                     ...newTasks[index],
                     task_name: selectedTaskName,
-                    estimated_time: selectedEstDate,
+                    allowedToDelete: taskCanBeDeleted(newTasks[index]),
                 };
 
                 newTasks[index] = newTaskData;

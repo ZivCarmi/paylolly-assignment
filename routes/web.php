@@ -18,6 +18,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('tasks/filter/{filter}', [TasksController::class, 'filter_by']);
 Route::resource('tasks', TasksController::class);
-
-// Route::get('update/task/list', [TasksController::class, 'updateTaskData']);

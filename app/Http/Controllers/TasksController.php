@@ -75,6 +75,18 @@ class TasksController extends Controller
         //
     }
 
+    public function update_status(Request $request, $id)
+    {
+        return response()->json('update_status');
+        // print_r();
+        // if ($request->keys('taskStatus')) {
+            
+        //     $validated = $request->validate([
+        //         'taskName' => 'required|in:Remaining,Completed',
+        //     ]);
+        // }
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -84,18 +96,27 @@ class TasksController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        $validated = $request->validate([
-            'taskName' => 'required',
-            'estDate' => 'required|date',
-        ]);
-        
-        $updated_task = Tasks::where('id', $id)->update([
-            'task_name' => $request->taskName,
-            'estimated_time' => Carbon::parse($request->estDate)->startOfDay(),
-        ]);
+        if ($request->has('taskStatus')) {
+            $validated = $request->validate([
+                'taskStatus' => 'required|in:Remaining,Completed',
+            ]);
 
-        // print_r($request->estDate);
+            $updated_task = [
+                'status' => $request->get('taskStatus') == 'Completed' ? 'Remaining' : 'Completed',
+            ];
+        } else {
+            $validated = $request->validate([
+                'taskName' => 'required',
+                'estDate' => 'required|date',
+            ]);
+            
+            $updated_task = [
+                'task_name' => $request->taskName,
+                'estimated_time' => Carbon::parse($request->estDate)->startOfDay(),
+            ];
+        }
+
+        Tasks::where('id', $id)->update($updated_task);
 
         return response()->json($updated_task);
     }
@@ -109,17 +130,20 @@ class TasksController extends Controller
     public function destroy($id)
     {
         $task = Tasks::find($id);
-        $task_estimated_time = Carbon::createFromFormat('Y-m-d', $task['estimated_time']);
         
-        $now = Carbon::now()->startOfDay();
-        
-        $days_difference = $now->diffInDays($task_estimated_time);
-
-        if ($days_difference > 6) {
-            return response()->json('Not allowed to delete tasks older than 6 days.');
-        } else {
-            $task = $task->delete();
+        if ($task['status'] != 'Completed') {
+            $task_estimated_time = Carbon::createFromFormat('Y-m-d', $task['estimated_time']);
+            
+            $now = Carbon::now()->startOfDay();
+            
+            $days_difference = $now->diffInDays($task_estimated_time);
+    
+            if ($days_difference > 6) {
+                return response()->json('Not allowed to delete tasks older than 6 days.');
+            }
         }
+
+        $task = $task->delete();
 
         return response()->json($task);
     }

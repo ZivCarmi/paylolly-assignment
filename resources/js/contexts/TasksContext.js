@@ -9,30 +9,32 @@ const TasksProvider = ({ children }) => {
     const [tasksCompleted, setTasksCompleted] = useState(0);
     const [tasksRemaining, setTasksRemaining] = useState(0);
 
-    const initialTasks = (tasks) => {
-        setTasks(tasks);
+    const initiateTasks = (tasks) => setTasks(tasks);
+
+    const taskCanBeDeleted = ({ status, estimated_time }) => {
+        if (!isTaskCompleted(status)) {
+            const taskEstDate = new Date(estimated_time);
+            const timeDifference = taskEstDate.getTime() - new Date();
+            const daysDifference = parseInt(
+                Math.ceil(timeDifference / (1000 * 3600 * 24))
+            );
+
+            if (daysDifference > 6) return false;
+        }
+
+        return true;
     };
+
+    const isTaskCompleted = (status) => (status === "Completed" ? true : false);
 
     const getTasks = () => {
         axios
             .get("tasks")
             .then((res) => {
                 res.data.map((task) => {
-                    const taskEstDate = new Date(task.estimated_time);
-                    const timeDifference = taskEstDate.getTime() - new Date();
-                    const daysDifference = parseInt(
-                        Math.ceil(timeDifference / (1000 * 3600 * 24))
-                    );
-
-                    console.log(daysDifference);
-
-                    if (daysDifference > 6) {
-                        task.allowedToDelete = false;
-                    } else {
-                        task.allowedToDelete = true;
-                    }
+                    task.allowedToDelete = taskCanBeDeleted(task);
                 });
-                initialTasks(res.data);
+                initiateTasks(res.data);
             })
             .catch((err) => {
                 console.error(err);
@@ -72,6 +74,8 @@ const TasksProvider = ({ children }) => {
                 totalTasks,
                 tasksCompleted,
                 tasksRemaining,
+                taskCanBeDeleted,
+                isTaskCompleted,
             }}
         >
             {children}
