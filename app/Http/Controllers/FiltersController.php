@@ -26,13 +26,19 @@ class FiltersController extends Controller
             }
 
         } elseif ($filter_type == 'filter_date') {
-            $filter_value = explode(',', $filter_value);
 
-            foreach ($filter_value as &$date) {
-                $date = Carbon::createFromFormat('D M d Y H:i:s e+', $date);
+            if ($filter_value == 'All') {
+                $tasks = Tasks::orderBy('id', 'DESC')->get();
+            } else {
+                $filter_value = explode(',', $filter_value);
+
+                foreach ($filter_value as &$date) {
+                    $date = Carbon::createFromFormat('D M d Y H:i:s e+', $date);
+                }
+
+                $tasks = Tasks::whereBetween('estimated_time', [$filter_value[0], $filter_value[1]])->get();
             }
-
-            $tasks = Tasks::whereBetween('estimated_time', [$filter_value[0], $filter_value[1]])->get();
+            
         }
         
         return response()->json($tasks);

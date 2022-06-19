@@ -1,0 +1,75 @@
+:root {
+    --app-dark-blue: #020729;
+    --dark-purple: #5837e4;
+    --light-gray: #f1f1f1;
+    --orange: #ed8b00;
+    --red: #ee3e54;
+    --blue: #26aee8;
+}
+
+body {
+    font-family: "Nunito", sans-serif;
+    color: white;
+}
+
+#App {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--app-dark-blue);
+}
+
+button {
+    border: 2px solid var(--dark-purple);
+    background-color: var(--app-dark-blue);
+    color: inherit;
+    font-size: inherit;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out;
+}
+
+button:hover {
+    border-color: var(--orange);
+}
+
+input {
+    background-color: white;
+    border-radius: 2px;
+}
+
+input,
+select {
+    outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    letter-spacing: 1px;
+}
+
+table {
+    width: 100%;
+    border-spacing: 0 6px;
+}
+
+body .react-datepicker__close-icon {
+    top: 3px;
+}
+
+#App .react-datepicker__close-icon::after {
+    background-color: var(--blue);
+    height: 18px;
+    width: 18px;
+    font-size: 14px;
+}
+
+#App .react-datepicker-popper {
+    z-index: 2;
+}

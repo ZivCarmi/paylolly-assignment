@@ -3,6 +3,7 @@ import { useTasks } from "../../contexts/TasksContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import api from "../../api";
+import style from "../../css/Filters.module.css";
 
 const Filters = () => {
     const [availableStatuses, setAvailableStatuses] = useState([]);
@@ -30,10 +31,19 @@ const Filters = () => {
         filterTasks();
     }, [filterData]);
 
-    // Set filter data after we have a range of dates
     useEffect(() => {
+        // Reset filter by date
+        if (
+            filterData.filterType === "filter_date" &&
+            dateRange[0] === null &&
+            dateRange[1] === null
+        ) {
+            setFilterData({ ...filterData, filterValue: "All" });
+        }
+
         if (dateRange[0] === null || dateRange[1] === null) return;
 
+        // Set filter data after we have a range of dates
         setFilterData({
             filterType: "filter_date",
             filterValue: dateRange,
@@ -46,10 +56,11 @@ const Filters = () => {
     }, []);
 
     return (
-        <div className="filters">
-            <h2 className="filter-by">Filter by</h2>
-            <div className="filters-form">
-                <label>
+        <div className={style.filtersContainer}>
+            <h2 className={style.filtersTitle}>Filter by</h2>
+            <div className={style.filtersForm}>
+                <label className={style.filterLabel}>
+                    Status
                     <select
                         onChange={(e) =>
                             setFilterData({
@@ -65,9 +76,9 @@ const Filters = () => {
                             </option>
                         ))}
                     </select>
-                    Status
                 </label>
-                <label>
+                <label className={style.filterLabel}>
+                    Date
                     <DatePicker
                         onChange={(dates) => setDateRange(dates)}
                         dateFormat="dd/MM/yyyy"
@@ -76,8 +87,8 @@ const Filters = () => {
                         selectsRange={true}
                         startDate={startDate}
                         endDate={endDate}
+                        isClearable
                     />
-                    Date
                 </label>
             </div>
         </div>

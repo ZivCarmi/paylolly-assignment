@@ -21,6 +21,6 @@ Route::get('/', function () {
 });
 
 Route::get('tasks/filter_by/{filter_type}/{filter_value}', [FiltersController::class, 'filter_by']);
-Route::get('tasks/sort_by/{sort_type}/{sort_value}', [FiltersController::class, 'filter_by']);
+Route::post('tasks/sort_by/{sort_type}', [SortsController::class, 'sort_by']);
 Route::get('tasks/filters', [FiltersController::class, 'index']);
 Route::resource('tasks', TasksController::class);

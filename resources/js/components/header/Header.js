@@ -1,73 +1,48 @@
 import { useState } from "react";
 import { useTasks } from "../../contexts/TasksContext";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import api from "../../api";
 import Filters from "./Filters";
+import style from "../../css/Header.module.css";
+import Modal from "../Modal";
 
 const Header = () => {
-    const [selectedTaskName, setSelectedTaskName] = useState("");
-    const [selectedEstDate, setSelectedEstDate] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const {
-        tasks,
-        setTasks,
-        totalTasks,
-        tasksCompleted,
-        tasksRemaining,
-        taskCanBeDeleted,
-    } = useTasks();
-
-    const submitNewTask = async () => {
-        try {
-            await api
-                .createTask({
-                    taskName: selectedTaskName,
-                    estDate: selectedEstDate,
-                })
-                .then((res) => {
-                    res.data.allowedToDelete = taskCanBeDeleted(res.data);
-                    setTasks([res.data, ...tasks]);
-                    setSelectedTaskName("");
-                    setSelectedEstDate(null);
-                });
-        } catch (error) {
-            alert(`Failed to add Task: ${error}`);
-        }
-    };
+    const { totalTasks, tasksCompleted, tasksRemaining } = useTasks();
 
     return (
-        <div className="header">
-            <div className="total-tasks">Total Tasks: {totalTasks}</div>
-            <div className="tasks-completed">
-                Tasks Completed: {tasksCompleted}
+        <div className={style.header}>
+            <div className={style.listCounters}>
+                <div className={style.counterWrapper}>
+                    Total Tasks:
+                    <span className={style.counterValue}>{totalTasks}</span>
+                </div>
+                <div className={style.counterWrapper}>
+                    Tasks Completed:
+                    <span className={style.counterValue}>{tasksCompleted}</span>
+                </div>
+                <div className={style.counterWrapper}>
+                    Tasks Remaining:
+                    <span className={style.counterValue}>{tasksRemaining}</span>
+                </div>
             </div>
-            <div className="tasks-remaining">
-                Tasks Remaining: {tasksRemaining}
-            </div>
-            <button type="button">Add New Task</button>
-            <div className="create-new-task-container">
-                <label>
-                    <input
-                        type="text"
-                        onChange={(e) => setSelectedTaskName(e.target.value)}
-                        value={selectedTaskName}
-                    />
-                </label>
-                <label>
-                    <DatePicker
-                        selected={selectedEstDate}
-                        onChange={(date) => setSelectedEstDate(date)}
-                        dateFormat="dd/MM/yyyy"
-                        minDate={new Date()}
-                        onChangeRaw={(e) => e.preventDefault()}
-                    />
-                </label>
-                <button type="button" onClick={submitNewTask}>
+            <div className={style.listActions}>
+                <Filters />
+                <button
+                    type="button"
+                    className={style.addNewTask}
+                    onClick={() => setIsModalOpen(true)}
+                >
+                    <span className={style.plusIcon}></span>
                     Add Task
                 </button>
+                {isModalOpen && (
+                    <Modal
+                        title="Create Task"
+                        operation="create"
+                        setIsModalOpen={setIsModalOpen}
+                    />
+                )}
             </div>
-            <Filters />
         </div>
     );
 };

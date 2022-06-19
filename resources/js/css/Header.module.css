@@ -1,0 +1,82 @@
+.header {
+    margin-bottom: 20px;
+}
+
+.listCounters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 70px;
+}
+
+.counterWrapper {
+    display: flex;
+    gap: 6px;
+    color: var(--orange);
+    font-size: 1.25rem;
+}
+
+.counterValue {
+    font-weight: 700;
+}
+
+.listActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.addNewTask {
+    max-width: 180px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 2px;
+    padding: 8px 25px;
+    border-radius: 25px;
+    font-size: inherit;
+    box-shadow: 2px 3px 7px -3px #5536e3;
+}
+
+.addNewTask:hover {
+    box-shadow: 2px 3px 7px -3px var(--orange);
+}
+
+.plusIcon {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    margin-right: 8px;
+}
+
+.plusIcon:before,
+.plusIcon:after {
+    content: "";
+    grid-area: 1/1/2/2;
+    width: 10px;
+    height: 2px;
+    background-color: white;
+}
+
+.plusIcon:after {
+    transform: rotate(-90deg);
+}
+
+@media (max-width: 767px) {
+    .listCounters,
+    .listActions {
+        flex-direction: column;
+    }
+
+    .listActions {
+        max-width: 260px;
+        width: 100%;
+        margin: auto;
+    }
+
+    .addNewTask {
+        max-width: initial;
+    }
+}

@@ -4,9 +4,10 @@ import { useState } from "react";
 import Modal from "../Modal";
 import { useTasks } from "../../contexts/TasksContext";
 import api from "../../api";
+import style from "../../css/TaskRowActions.module.css";
 
 const TaskRowActions = ({ taskId, allowedToDelete }) => {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { tasks, setTasks } = useTasks();
 
     const deleteTask = () => {
@@ -16,21 +17,26 @@ const TaskRowActions = ({ taskId, allowedToDelete }) => {
     };
 
     return (
-        <div className="task-row-actions">
+        <div className={style.taskRowActions}>
             <button
                 type="button"
-                className="btn btn-update"
-                onClick={() => setModalIsOpen(true)}
+                className={style.taskActionButton}
+                onClick={() => setIsModalOpen(true)}
             >
                 <img src={EditIcon} alt="Edit" />
             </button>
-            {modalIsOpen && (
-                <Modal setModalIsOpen={setModalIsOpen} taskId={taskId} />
+            {isModalOpen && (
+                <Modal
+                    setIsModalOpen={setIsModalOpen}
+                    taskId={taskId}
+                    title="Update Task"
+                    operation="update"
+                />
             )}
             {allowedToDelete && (
                 <button
                     type="button"
-                    className="btn btn-delete"
+                    className={style.taskActionButton}
                     onClick={() => deleteTask()}
                 >
                     <img src={DeleteIcon} alt="Delete" />

@@ -1,0 +1,23 @@
+.taskRowActions {
+    display: flex;
+}
+
+.taskActionButton {
+    padding: 6px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+@media (max-width: 767px) {
+    .taskRowActions {
+        justify-content: center;
+        gap: 30px;
+        width: 100%;
+    }
+
+    .taskActionButton {
+        margin-left: 0;
+    }
+}

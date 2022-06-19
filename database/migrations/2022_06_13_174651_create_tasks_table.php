@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('task_name');
+            $table->text('task_name');
             $table->date('estimated_time');
             $table->enum('status', ['Remaining', 'Completed'])->default('Remaining');
             $table->timestamps();

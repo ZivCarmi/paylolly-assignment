@@ -1,0 +1,98 @@
+.tableContainer {
+    height: 500px;
+    overflow: auto;
+    scrollbar-color: var(--dark-purple) var(--light-gray);
+    scrollbar-width: thin;
+}
+
+.tableContainer::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+.tableContainer::-webkit-scrollbar-track {
+    background: var(--light-gray);
+}
+
+/* Handle */
+.tableContainer::-webkit-scrollbar-thumb {
+    background: var(--dark-purple);
+}
+
+/* Handle on hover */
+.tableContainer::-webkit-scrollbar-thumb:hover {
+    background: var(--orange);
+}
+
+.todoTable {
+    padding-right: 16px;
+    position: relative;
+}
+
+.tableHead {
+    position: sticky;
+    top: 0;
+    left: 0;
+    background: var(--app-dark-blue);
+    z-index: 1;
+}
+
+.taskHeadDescription {
+    cursor: pointer;
+    user-select: none;
+    text-align: left;
+    padding: 0 15px 10px;
+}
+
+.sortOrderIcon {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid white;
+    display: inline-block;
+    margin-left: 10px;
+    transition: border-color 0.2s ease-in-out;
+    pointer-events: none;
+}
+
+.taskHeadDescription:hover .sortOrderIcon {
+    border-bottom-color: var(--orange);
+    border-top-color: var(--orange);
+}
+
+.descendingOrder {
+    border-top: none;
+    border-bottom: 7px solid white;
+}
+
+@media (max-width: 767px) {
+    .tableHeadRow {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0 10px;
+        padding: 12px 0;
+    }
+
+    .tableHeadRow:before {
+        content: attr(data-title);
+        display: block;
+        width: 100%;
+        grid-area: 1 / span 3;
+        text-align: center;
+        margin-bottom: 12px;
+        font-size: 1.25rem;
+    }
+
+    .taskHeadDescription {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        text-align: center;
+    }
+
+    .taskHeadActions {
+        display: none;
+    }
+}

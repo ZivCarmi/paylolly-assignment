@@ -2,10 +2,19 @@ import { useEffect, useState } from "react";
 import TaskRowActions from "./TaskRowActions";
 import api from "../../api";
 import { useTasks } from "../../contexts/TasksContext";
+import style from "../../css/TaskRow.module.css";
+import classnames from "classnames";
 
 const TaskRow = ({ task }) => {
     const [formattedEstDate, setFormattedEstDate] = useState("");
     const { tasks, setTasks, taskCanBeDeleted } = useTasks();
+    const taskStatusClasses = classnames([
+        style.taskStatus,
+        {
+            [style.taskCompleted]: task.status === "Completed",
+            [style.taskRemaining]: task.status === "Remaining",
+        },
+    ]);
 
     const updateStatus = async () => {
         try {
@@ -48,11 +57,36 @@ const TaskRow = ({ task }) => {
     }, [task]);
 
     return (
-        <tr onClick={updateStatus}>
-            <td>{task.task_name}</td>
-            <td>{formattedEstDate}</td>
-            <td>{task.status}</td>
-            <td onClick={(e) => e.stopPropagation()}>
+        <tr onClick={updateStatus} className={style.taskRow}>
+            <td
+                data-title="Name"
+                className={`${style.taskRowBg} ${style.taskRowFirst} ${style.taskData}`}
+            >
+                {/* <div className={`task-data-inner ${style.taskDataInner}`}> */}
+                {/* <span className={taskStatusClasses}></span> */}
+                {task.task_name}
+                {/* </div> */}
+            </td>
+            <td
+                data-title="Est. Date"
+                className={`${style.taskRowBg} ${style.taskRowMiddle} ${style.taskData}`}
+            >
+                {/* <div className={`task-data-inner ${style.taskDataInner}`}> */}
+                {formattedEstDate}
+                {/* </div> */}
+            </td>
+            <td
+                data-title="Status"
+                className={`${style.taskRowBg} ${style.taskRowLast} ${style.taskData}`}
+            >
+                {/* <div className={`task-data-inner ${style.taskDataInner}`}> */}
+                {task.status}
+                {/* </div> */}
+            </td>
+            <td
+                onClick={(e) => e.stopPropagation()}
+                className={`${style.taskRowActions} ${style.taskData}`}
+            >
                 <TaskRowActions
                     taskId={task.id}
                     allowedToDelete={task.allowedToDelete}

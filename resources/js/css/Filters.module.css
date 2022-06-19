@@ -1,0 +1,40 @@
+.filtersTitle {
+    margin: 0 0 6px;
+}
+
+.filtersForm {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.filterLabel {
+    display: flex;
+    flex-direction: column;
+}
+
+.filterLabel select,
+.filterLabel input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-top: 6px;
+}
+
+@media (max-width: 767px) {
+    .filtersContainer {
+        width: 100%;
+    }
+
+    .filtersTitle {
+        text-align: center;
+    }
+
+    .filtersForm {
+        flex-direction: column;
+    }
+
+    .filterLabel {
+        width: 100%;
+    }
+}

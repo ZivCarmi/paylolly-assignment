@@ -1,39 +1,54 @@
 import { useState, useEffect } from "react";
 import { useTasks } from "../../contexts/TasksContext";
 import TaskRow from "./TaskRow";
+import api from "../../api";
+import style from "../../css/TodoList.module.css";
+import classnames from "classnames";
 
 const TodoList = () => {
     const [displayTasksTable, setDisplayTasksTable] = useState(false);
-    // const [sortData, setSortData] = useState({
-    //     name: {
-    //         isSorted: false,
-    //         order: "",
-    //     },
-    //     date: {
-    //         isSorted: false,
-    //         order: "",
-    //     },
-    //     status: {
-    //         isSorted: false,
-    //         order: "",
-    //     },
-    // });
-    const { tasks } = useTasks();
+    const { tasks, initiateTasks } = useTasks();
+    const [sortOrder, setSortOrder] = useState("ASC");
+    const [sortData, setSortData] = useState({
+        name: false,
+        date: false,
+        status: false,
+    });
+
+    const changeSortOrder = () => {
+        sortOrder === "DESC" ? setSortOrder("ASC") : setSortOrder("DESC");
+        initiateTasks([...tasks].reverse());
+    };
 
     const sortTasks = (e) => {
-        // const { sortKey } = e.target.dataset;
-        // if (sortData[sortKey] === undefined) return;
-        // const newTasks = [...tasks];
-        // if (sort === "name") {
-        //     setTasks(
-        //         newTasks.sort((a, b) => a.task_name.localeCompare(b.task_name))
-        //     );
-        // } else if (sort === "date") {
-        // } else if (sort === "status") {
-        //     setTasks(
-        //         newTasks.sort((a, b) => a.task_name.localeCompare(b.task_name))
-        //     );
-        // }
+        const { sortKey } = e.target.dataset;
+        const sortType = sortData[sortKey];
+
+        if (sortType === undefined) return;
+
+        if (sortType === true) return changeSortOrder();
+
+        const taskIds = tasks.map(({ id }) => id);
+
+        // We also send task ids
+        api.sortTasks(sortKey, taskIds)
+            .then((res) => {
+                const newSortData = sortData;
+
+                // We reset all other sorts
+                Object.keys(newSortData).map((sort) => {
+                    if (sort !== sortKey) {
+                        newSortData[sort] = false;
+                    }
+                });
+
+                setSortOrder("DESC");
+                setSortData({ ...newSortData, [sortKey]: true });
+                initiateTasks(res.data);
+            })
+            .catch((error) => {
+                alert(`Failed to sort tasks: ${error}`);
+            });
     };
 
     useEffect(() => {
@@ -43,39 +58,71 @@ const TodoList = () => {
     }, [tasks]);
 
     return displayTasksTable ? (
-        <table className="todo-table">
-            <thead>
-                <tr>
-                    <th
-                        className="task-name"
-                        data-sort-key="name"
-                        onClick={sortTasks}
-                    >
-                        Task name
-                    </th>
-                    <th
-                        className="task-date"
-                        data-sort-key="date"
-                        onClick={sortTasks}
-                    >
-                        Estimated Time
-                    </th>
-                    <th
-                        className="task-status"
-                        data-sort-key="status"
-                        onClick={sortTasks}
-                    >
-                        Status
-                    </th>
-                    <th className="task-actions">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {tasks.map((task, index) => (
-                    <TaskRow key={index} task={task} />
-                ))}
-            </tbody>
-        </table>
+        <div className={style.tableContainer}>
+            <table className={style.todoTable}>
+                <thead className={style.tableHead}>
+                    <tr className={style.tableHeadRow} data-title="Sort by">
+                        <th
+                            className={style.taskHeadDescription}
+                            data-sort-key="name"
+                            onClick={sortTasks}
+                        >
+                            Task name
+                            <span
+                                className={classnames([
+                                    style.sortOrderIcon,
+                                    {
+                                        [style.descendingOrder]:
+                                            sortData.name === true &&
+                                            sortOrder === "DESC",
+                                    },
+                                ])}
+                            ></span>
+                        </th>
+                        <th
+                            className={style.taskHeadDescription}
+                            data-sort-key="date"
+                            onClick={sortTasks}
+                        >
+                            Estimated Time
+                            <span
+                                className={classnames([
+                                    style.sortOrderIcon,
+                                    {
+                                        [style.descendingOrder]:
+                                            sortData.date === true &&
+                                            sortOrder === "DESC",
+                                    },
+                                ])}
+                            ></span>
+                        </th>
+                        <th
+                            className={style.taskHeadDescription}
+                            data-sort-key="status"
+                            onClick={sortTasks}
+                        >
+                            Status
+                            <span
+                                className={classnames([
+                                    style.sortOrderIcon,
+                                    {
+                                        [style.descendingOrder]:
+                                            sortData.status === true &&
+                                            sortOrder === "DESC",
+                                    },
+                                ])}
+                            ></span>
+                        </th>
+                        <th className={style.taskHeadActions}>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tasks.map((task, index) => (
+                        <TaskRow key={index} task={task} />
+                    ))}
+                </tbody>
+            </table>
+        </div>
     ) : (
         <div>No tasks available</div>
     );
